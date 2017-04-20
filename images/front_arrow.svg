@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="51.41" height="51.41" viewBox="0 0 51.41 51.41">
+  <defs>
+    <style>
+      .a {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <title>front_arrow</title>
+  <line class="a" y1="25.71" x2="50" y2="25.71"/>
+  <polyline class="a" points="25 0.71 50 25.71 25 50.71"/>
+</svg>

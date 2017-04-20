@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
+  <defs>
+    <style>
+      .a {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>fullscreen_iconAsset 14</title>
+  <g>
+    <rect class="a" width="35" height="35"/>
+    <path d="M34.18,30.22l-9.71-9.71a13.32,13.32,0,1,0-4,4l9.71,9.71a2.8,2.8,0,0,0,4-4ZM19,22.94a11.24,11.24,0,1,1,4-4A11.27,11.27,0,0,1,19,22.94Z"/>
+    <polygon points="19.3 11.3 15.3 11.3 15.3 7.3 11.3 7.3 11.3 11.3 7.3 11.3 7.3 15.3 11.3 15.3 11.3 19.3 15.3 19.3 15.3 15.3 19.3 15.3 19.3 11.3"/>
+  </g>
+</svg>

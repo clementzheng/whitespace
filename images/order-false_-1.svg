@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <style>
+      .a {
+        fill: gray;
+      }
+    </style>
+  </defs>
+  <title>order-false_-1-Asset 42</title>
+  <g>
+    <path d="M35,4V18H15V4H35m4-4H11V22H39V0Z"/>
+    <path class="a" d="M46,32V46H4V32H46m4-4H0V50H50V28Z"/>
+  </g>
+</svg>

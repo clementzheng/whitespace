@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
+  <defs>
+    <style>
+      .a {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>text_option_Asset 3</title>
+  <g>
+    <rect class="a" width="35" height="35"/>
+    <path d="M20.5,17.5,23.15,5.9C23.64,3.75,25.5,2,27.27,2H30.5V0h-18V2H16A1.53,1.53,0,0,1,17.6,3.95L14.5,17.5,11.85,29.1C11.36,31.25,9.5,33,7.73,33H4.5v2h18V33H19a1.53,1.53,0,0,1-1.55-1.95Z"/>
+  </g>
+</svg>

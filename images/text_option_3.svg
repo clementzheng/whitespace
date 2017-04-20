@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
+  <defs>
+    <style>
+      .a {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>text_option_Asset 5</title>
+  <g>
+    <rect class="a" width="35" height="35"/>
+    <rect width="25" height="3"/>
+    <rect y="8" width="35" height="3"/>
+    <rect y="16" width="25" height="3"/>
+    <rect y="24" width="35" height="3"/>
+    <rect y="32" width="25" height="3"/>
+  </g>
+</svg>

@@ -1,0 +1,641 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Whitespace</title>
+	<meta name="description" content="Parametric editorial design app">
+	<meta name="author" content="Clement Zheng (clementzheng.info)">
+	<link rel="shortcut icon" href="favicon.png">	
+
+	<!--ROBOTO-->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+
+	<!--RUBIK-->
+	<link href="https://fonts.googleapis.com/css?family=Rubik:300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+
+	<!--OSWALD-->
+	<link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700" rel="stylesheet">
+
+	<!--LIBRE BASKERVILLE-->
+	<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700" rel="stylesheet">
+
+	<!--PLAYFAIR DISPLAY-->
+	<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
+
+	<!--Merriweather-->
+	<link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+
+	<!--ROBOTO MONO-->
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono:100,100i,300,300i,400,400i,500,500i,700,700i" rel="stylesheet">
+
+	<!--NOTO SANS-->
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700,700i" rel="stylesheet">
+
+	<!--NOTO SERIF-->
+	<link href="https://fonts.googleapis.com/css?family=Noto+Serif:400,400i,700,700i" rel="stylesheet">
+
+	<!--ROBOTO SLAB-->
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:100,300,400,700" rel="stylesheet">
+	
+	<!--CSS-->
+	<link rel="stylesheet" href="css/simplemde.min.css">
+	<link rel="stylesheet" href="css/style.css">
+	
+	<!--SCRIPTS-->
+	<script language="javascript" type="text/javascript" src="js/lib/FileSaver.js"></script>
+	<script language="javascript" type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/lib/jquery-ui.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/lib/jQuery.print.js"></script>
+	<script language="javascript" type="text/javascript" src="js/lib/simplemde.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/lib/markdown-it.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/main.js"></script>
+	<script language="javascript" type="text/javascript" src="js/mousekey.js"></script>
+	
+	
+</head>
+
+<body onload="init()">
+	<div class="ui_container">
+
+	<div class="nav_bar hidden">
+		<div class="transition" id="back_button">
+			<img src="images/back_arrow.svg">
+		</div>
+		<div id="ui_progress">
+			<div class="progress_mark"></div>
+			<div class="progress_mark"></div>
+			<div class="progress_mark"></div>
+			<div class="progress_mark"></div>
+		</div>
+		<div class="transition" id="next_button">
+			<img src="images/front_arrow.svg">
+		</div>
+	</div>
+
+	<div class="ui_screen active" id="landing">
+		<div class="container">
+			<div class="twelve column" id="landing_title">
+				<svg xmlns="http://www.w3.org/2000/svg" width="177" height="227" viewBox="0 0 177 227">
+					<title>ws_logo</title>
+					<path d="M864.12,565.26h-150a13.52,13.52,0,0,1-13.5-13.5v-200a13.52,13.52,0,0,1,13.5-13.5h150a13.52,13.52,0,0,1,13.5,13.5v200A13.52,13.52,0,0,1,864.12,565.26Zm-150-220a6.51,6.51,0,0,0-6.5,6.5v200a6.51,6.51,0,0,0,6.5,6.5h150a6.51,6.51,0,0,0,6.5-6.5v-200a6.51,6.51,0,0,0-6.5-6.5Z" transform="translate(-700.62 -338.26)"/>
+					<rect x="23.5" y="23.5" width="60" height="60"/>
+				</svg>
+				<span>whitespace</span>
+			</div>
+			<div class="four column two_column_left" id="get_started">
+				<div><a class="big_button" id="landing_start" onclick="landingStartClick()">Start</a></div>
+				<div><label class="big_button" for="landing_load">Load</label><input id="landing_load" name="landing_load" type="file"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="ui_screen" id="page_setup">
+		<div class="container">
+			<div class="eight column heading">
+				<h1>1&mdash;Structure the page</h1>
+			</div>
+			<div class="three column" id="page_param">
+				<ul>
+					<span>Units</span>
+					<div id="units_list">
+						<div class="radio_button">
+	  						<input class="radio_button" type="radio" name="units" value="in" checked>
+	  						<label for="units">in</label>
+						</div>
+						<div class="radio_button">
+	  						<input class="radio_button" type="radio" name="units" value="mm">
+	  						<label for="units">mm</label>
+						</div>
+						<div class="radio_button">
+	  						<input class="radio_button" type="radio" name="units" value="px">
+	  						<label for="units">px</label>
+						</div>
+					</div>
+				</ul>		
+				<ul>
+					<span>Page</span>
+					<li class="param">
+						<label>Width</label>
+						<input type="number" step="0.1" name="page_width" value="8.5">
+						<span class="number_units"></span>
+					</li>
+					<li class="param">
+						<label>Height</label>
+						<input type="number" step="0.1" name="page_height" value="11.0">
+						<span class="number_units"></span>
+					</li>
+				</ul>
+				<ul>
+					<span>Margins</span>
+					<li class="param">
+						<label>Top</label>
+						<input type="number" step="0.1" name="margin_top" value="0.5">
+						<span class="number_units"></span>
+					</li>
+					<li class="param">
+						<label>Left</label>
+						<input type="number" step="0.1" name="margin_left" value="0.75">
+						<span class="number_units"></span>
+					</li>
+					<li class="param">
+						<label>Right</label>
+						<input type="number" step="0.1" name="margin_right" value="0.75">
+						<span class="number_units"></span>
+					</li>
+					<li class="param">
+						<label>Bottom</label>
+						<input type="number" step="0.1" name="margin_bottom" value="1.25">
+						<span class="number_units"></span>
+					</li>
+				</ul>
+				<ul>
+					<span>Grid</span>
+					<li class="param">
+						<label>Columns</label>
+						<input type="number" step="1" name="column_count" value="5">
+					</li>
+					<li class="param">
+						<label>Rows</label>
+						<input type="number" step="1" name="row_count" value="7">
+					</li>
+					<li class="param">
+						<label>Gutter</label>
+						<input type="number" step="0.1" name="gutter" value="0.16">
+						<span class="number_units"></span>
+					</li>
+				</ul>
+				<ul>
+				<!--
+				<div id="set_page">
+					<div><a class="big_button" onclick="setPageStructure()">Set</a></div>
+				</div>
+				-->
+				</ul>
+
+			</div>
+			<div class="three column one_column_left page_parent" id="page_setup_page">
+				
+			</div>
+		</div>
+	</div>
+
+	<div class="ui_screen" id="page_layout">
+		<div class="container">
+			<div class="eight column heading">
+				<h1>2&mdash;Place content</h1>
+			</div>
+			<div class="three column page_parent" id="page_layout_page">
+				
+			</div>
+			<div class="four column one_column_left" id="layout_panel">
+				<div id="layout_view_settings">
+					<div class="display_button active transition display_margin">margin</div>
+					<div class="display_button active transition display_cells">cells</div>
+					<div class="display_button transition display_blocks">blocks</div>
+				</div>
+				<div id="layout_toolbar">
+					<div class="transition" id="place_text">
+						<img src="images/icon_text.svg">
+						<span class="transition">place text</span>
+					</div>
+					<div class="transition" id="place_image">
+						<img src="images/icon_image.svg">
+						<span class="transition">place image</span>
+					</div>
+					<!-- <div class="transition" id="place_edit">
+						<img src="images/icon_place.svg">
+						<span class="transition">edit placement</span>
+					</div> -->
+					<div class="transition" id="edit_content">
+						<img src="images/icon_edit.svg">
+						<span class="transition">edit content</span>
+					</div>
+					<div class="transition" id="edit_view">
+						<img src="images/icon_view.svg">
+						<span class="transition">view fullscreen</span>
+					</div>
+				</div>
+				<div id="layout_instructions" class="transition">
+				</div>
+				<div id="layout_content_edit" class="transition">
+					<div class="edit_title subheading">
+						Edit content
+					</div>
+					<div class="edit_image">
+						<div id="bg_size_div">
+								<label for="bg_size">Background Size</label>
+								<select name="bg_size">
+								  <option value="cover">cover</option>
+								  <option value="contain">contain</option>
+								</select>
+							</div>
+						<div id="image_bg_div" class="image_option type_option">
+							<label for="ibg_color">Background</label>
+							<input type="text" name="ibg_color" value="none">
+							<div id="ibg_color_dropper" class="color_picker"><img src="images/eyedropper.svg"></div>
+						</div>
+						<div id="image_opacity_div" class="image_option type_option">
+							<label for="img_opacity">Opacity</label>
+							<input type="number" name="img_opacity" min="0.0" max="1.0" step="0.1" value="1.0">
+						</div>
+						<div id="image_url_div">
+							<label for="image_url">Image URL</label>
+							<input type="text" name="image_url">
+						</div>
+						<div class="edit_button_div">
+							<div><a class="big_button update_content_button">Update</a></div>
+							<div class="float_right"><a class="big_button warning delete_content_button">Delete</a></div>
+						</div>
+					</div>
+					<div class="edit_text">
+						<div id="type_option_div">
+							<div id="typeface_div">
+								<label for="typeface_list">Typeface</label>
+								<select name="typeface_list">
+								  <option value="Roboto" selected>Roboto</option>
+								  <option value="Rubik">Rubik</option>
+								  <option value="Noto Sans">Noto Sans</option>
+								  <option value="Oswald">Oswald</option>
+								  <option value="Libre Baskerville">Libre Baskerville</option>
+								  <option value="Playfair Display">Playfair Display</option>
+								  <option value="Noto Serif">Noto Serif</option>
+								  <option value="Merriweather">Merriweather</option>
+								  <option value="Roboto Slab">Roboto Slab</option>
+								  <option value="Roboto Mono" selected>Roboto Mono</option>
+								</select>
+							</div>
+							<div class="type_option type_color">
+								<label for="font_color">Color</label>
+								<input type="text" name="font_color" value="black">
+								<div id="font_color_dropper" class="color_picker"><img src="images/eyedropper.svg"></div>
+							</div>
+							<div class="type_option type_color">
+								<label for="bg_color">Background</label>
+								<input type="text" name="bg_color" value="none">
+								<div id="bg_color_dropper" class="color_picker"><img src="images/eyedropper.svg"></div>
+							</div>
+							<div class="type_option break">
+								<label for="font_size">Size (pt)</label>
+								<input type="number" name="font_size" min="1" step="1" value="10">
+							</div>
+							<div class="type_option">
+								<label for="font_weight">Weight</label>
+								<input type="number" name="font_weight" min="100" step="100" max="900" value="400">
+							</div>
+							<div class="type_option">
+								<label for="letter_spacing">Tracking</label>
+								<input type="number" name="letter_spacing" step="0.01" value="0">
+							</div>
+							<div class="type_option">
+								<label for="line_height">Leading</label>
+								<input type="number" name="line_height" min="0.1" step="0.1" value="1.2">
+							</div>
+							<div class="type_option">
+								<label for="padding">Padding</label>
+								<input type="number" name="padding" min="0.0" step="0.01" value="0">
+							</div>
+							<!-- <div class="type_option" id="type_style">
+								<div class="type_option_button" id="italic_option">
+									<img src="images/text_option_1.svg">
+								</div>
+								<div class="type_option_button" id="underline_option">
+									<img src="images/text_option_2.svg">
+								</div>
+							</div> -->
+							<div class="type_option button break" id="type_align">
+								<div class="type_option_button active" id="align_left">
+									<img src="images/text_option_3.svg">
+								</div>
+								<div class="type_option_button" id="align_center">
+									<img src="images/text_option_4.svg">
+								</div>
+								<div class="type_option_button" id="align_right">
+									<img src="images/text_option_5.svg">
+								</div>
+							</div>
+							<div class="type_option button" id="type_vertical">
+								<div class="type_option_button active" id="vertical_top">
+									<img src="images/text_option_6.svg">
+								</div>
+								<div class="type_option_button" id="vertical_center">
+									<img src="images/text_option_7.svg">
+								</div>
+								<div class="type_option_button" id="vertical_bottom">
+									<img src="images/text_option_8.svg">
+								</div>
+							</div>
+							<div id="markdown_instructions">
+								<span class="tag">&lt;br&gt;</span>
+								<span class="info">linebreak</span>
+								<span class="tag">&lt;b&gt;&lt;/b&gt;</span>
+								<span class="info"><b>bold</b></span>
+								<span class="tag">&lt;i&gt;&lt;/i&gt;</span>
+								<span class="info"><i>italic</i></span>
+								<span class="tag">&lt;u&gt;&lt;/u&gt;</span>
+								<span class="info"><u>underline</u></span>
+								<span class="info right">html permitted</span>
+							</div>
+							<div id="text_content">
+								<!-- <label for="text_content_area">Content</label> -->
+								<textarea name="text_content_area"></textarea>
+							</div>
+						</div>
+						<div class="edit_button_div">
+							<div><a class="big_button update_content_button">Update</a></div>
+							<div class="float_right"><a class="big_button warning delete_content_button">Delete</a></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="ui_screen" id="page_order">
+		<div class="container">
+
+			<div class="eight column heading">
+				<h1>3&mdash;Define Relations</h1>
+			</div>
+			<div class="three column page_parent" id="page_order_page">
+			</div>
+
+			<div class="four column one_column_left">
+				<div id="order_view_settings">
+					<div class="display_button active transition display_margin">margin</div>
+					<div class="display_button active transition display_cells">cells</div>
+					<div class="display_button transition display_blocks">blocks</div>
+				</div>
+				<div id="order_instructions" class="transition">
+					<p>Double click on page object to start.</p>
+				</div>
+			</div>
+
+			<div class="two column one_column_left transition">
+				<div id="order_list_div">
+					<div id="order_list_title" class="subheading">
+						Relations List
+					</div>
+					<div id="order_list_button_div">
+						<div id="set_all_order">Auto set</div>
+						<div id="clear_all_order">Clear all</div>
+					</div>
+					<div id="order_list">
+					</div>
+				</div>
+			</div>
+
+			<div class="two column transition">
+				<div id="edit_order_div">
+					<div id="edit_order_title" class="subheading">
+						Edit Relation
+					</div>
+					<div id="edit_order_elements">
+						<span id="element_A"></span>
+						<span id="connector">relative to</span>
+						<span id="element_B"></span>
+					</div>
+					<div id="edit_order_icon_div">
+						<div class="edit_order_icon" id="order-0_0">
+							<img src="images/order-0_0.svg">
+							<span>Same position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-0_1">
+							<img src="images/order-0_1.svg">
+							<span>Same horizontal position.<br/>Lower vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-0_-1">
+							<img src="images/order-0_-1.svg">
+							<span>Same horizontal position.<br/>Higher vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-0_false">
+							<img src="images/order-0_false.svg">
+							<span>Same horizontal position.<br/>Flexible vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-1_0">
+							<img src="images/order-1_0.svg">
+							<span>To the right.<br/>Same vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-1_1">
+							<img src="images/order-1_1.svg">
+							<span>To the right.<br/>Lower vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-1_-1">
+							<img src="images/order-1_-1.svg">
+							<span>To the right.<br/>Higher vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-1_false">
+							<img src="images/order-1_false.svg">
+							<span>To the right.<br/>Flexible vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order--1_0">
+							<img src="images/order--1_0.svg">
+							<span>To the left.<br/>Same vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order--1_1">
+							<img src="images/order--1_1.svg">
+							<span>To the left.<br/>Lower vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order--1_-1">
+							<img src="images/order--1_-1.svg">
+							<span>To the left.<br/>Higher vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order--1_false">
+							<img src="images/order--1_false.svg">
+							<span>To the left.<br/>Flexible vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-false_0">
+							<img src="images/order-false_0.svg">
+							<span>Flexible horizontal position.<br/>Same vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-false_1">
+							<img src="images/order-false_1.svg">
+							<span>Flexible horizontal position.<br/>Lower vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-false_-1">
+							<img src="images/order-false_-1.svg">
+							<span>Flexible horizontal position.<br/>Higher vertical position.</span>
+						</div>
+						<div class="edit_order_icon" id="order-false_false">
+							<img src="images/order-false_false.svg">
+							<span>Flexible position.</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="ui_screen" id="page_alt">
+		<div class="container">
+			<div class="eight column heading">
+				<h1>4&mdash;Explore Alternatives</h1>
+			</div>
+			<div class="two column page_parent" id="page_alt_page">
+				
+			</div>
+			<div class="five column one_column_left">
+				<div id="alt_view_settings">
+					<div class="display_button active transition display_margin">margin</div>
+					<div class="display_button active transition display_cells">cells</div>
+					<div class="display_button transition display_blocks">blocks</div>
+				</div>
+				<div id="alt_div">
+					<div id="alt_title" class="subheading">Page Alternatives</div>
+					<div id="alt_list_div">
+						<div id="alt_control">
+							<div id="refresh_alternatives">Refresh</div>
+							<div id="whitespace_div">
+								<img src="images/whitespace_2.svg">
+								<input type="range" name="whitespace_val" min="0.05" max="0.95" value="0.5" step="0.05">
+								<img src="images/whitespace_1.svg">
+							</div>
+						</div>
+						<div id="alt_message">
+							<div id="alt_loading" class="transition active">Generating alternatives&hellip;</div>
+							<div id="alt_details" class="transition">
+								Iterated through <span id="iteration_count" class="count">10,000</span> variations, resulting in <span id="filtered_count" class="count">836</span> alternatives that fit your criteria.
+								<br>
+								<span id="alt_present" class="fork_message">Presenting <span id="return_count" class="count">12</span> for your consideration.</span>
+								<span id="alt_zero" class="fork_message">Try reducing relationships, elements or spacing. Or, try refreshing again.</span>
+							</div>
+						</div>
+						<div id="alt_list">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="" id="saved_alt_div">
+		<div id="saved_alt_title">
+			Saved Pages
+		</div>
+		<div id="saved_alt_list">
+			
+		</div>
+	</div>
+
+	<div class="ui_screen" id="view_fullscreen">
+		<div class="flex_wrapper">
+			<div class="toolbar">
+				<div id="zoom_div" class="fullscreen_button_div">
+					<div id="zoom_in"><img src="images/fullscreen_icon_2.svg"></div>
+					<div id="zoom_out"><img src="images/fullscreen_icon_1.svg"></div>
+					<div id="print_fullscreen"><img src="images/icon_print.svg"></div>
+				</div>
+				<div id="fullscreen_view_settings">
+					<div class="display_button active transition display_margin">margin</div>
+					<div class="display_button active transition display_cells">cells</div>
+					<div class="display_button transition display_blocks">blocks</div>
+				</div>
+				<div id="zoom_div" class="fullscreen_button_div">
+					<div id="exit_fullscreen"><img src="images/fullscreen_icon_3.svg"></div>
+				</div>
+			</div>
+		</div>
+		<div class="flex_wrapper">
+			<div id="fullscreen_ruler">
+			</div>
+		</div>
+		<div class="flex_wrapper">
+			<div id="fullscreen_page">
+			</div>
+		</div>
+	</div>
+
+	<div id="warning_div">
+		<div class="container">
+			<div class="six column one_column_left warning_text">
+				<p>
+				</p>
+			</div>
+			<div class="four column button_div two_column_left">
+				<div><a class="big_button warning" id="warning_leave">Yes</a></div>
+				<div><a class="big_button" id="warning_cancel">Cancel</a></div>
+			</div>
+		</div>
+	</div>
+
+	</div>
+
+	<div id="print_div">
+	</div>
+
+	<div id="color_picker_div" class="hide">
+		<div id="color_input_div">
+			<div class="color_input">
+				<label for="R_val">Red</label>
+				<input type="number" name="R_val" step="1" value="0" min="0" max="255">
+			</div>
+			<div class="color_input">
+				<label for="R_val">Green</label>
+				<input type="number" name="G_val" step="1" value="0" min="0" max="255">
+			</div>
+			<div class="color_input">
+				<label for="R_val">Blue</label>
+				<input type="number" name="B_val" step="1" value="0" min="0" max="255">
+			</div>
+			<div class="color_input">
+				<label for="R_val">Alpha</label>
+				<input type="number" name="A_val" step="0.05" value="1.0" min="0.0" max="1.0">
+			</div>
+		</div>
+		<div id="color_format_div">
+			<span id="color_hex"></span>
+			<span id="color_hsv"></span>
+		</div>
+		<div id="chosen_color_div"><div id="chosen_color"></div></div>
+		<div id="color_rect"><img src="images/color.png"><div id="color_cursor"></div></div>
+		<div id="grey_rect"><img src="images/grey.png"><div id="grey_cursor"></div></div>
+	</div>
+
+	<div id="export_project" class="">
+		<img src="images/export.svg">
+	</div>
+
+</body>
+
+<style id="print_style">
+	@page {
+		size: 91.44mm 53.34mm; // set appropriately
+		margin: 0;
+	}
+	@media print {
+		html, body {
+			width: 91.44mm; // set appropriately
+			height: 53.34mm;
+		}
+	}
+</style>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

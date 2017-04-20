@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
+  <defs>
+    <style>
+      .a {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>text_option_Asset 4</title>
+  <g>
+    <rect class="a" width="35" height="35"/>
+    <polygon points="27.5 0 27.5 0 25.5 0 25.5 0 26.5 0 27.5 0"/>
+    <polygon points="9.5 0 9.5 0 7.5 0 7.5 0 8.5 0 9.5 0"/>
+    <path d="M27.5,0h-2V16a8,8,0,0,1-16,0V0h-5V16a13,13,0,0,0,26,0V0Z"/>
+    <rect x="4.5" y="33" width="26" height="2"/>
+  </g>
+</svg>
