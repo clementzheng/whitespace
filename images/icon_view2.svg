@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <style>
+      .a {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>Asset 12</title>
+  <g>
+    <rect class="a" width="50" height="50"/>
+    <path d="M48.83,43.17,35,29.3A19,19,0,1,0,29.3,35L43.17,48.83a4,4,0,0,0,5.66-5.66ZM27.11,32.77a16.06,16.06,0,1,1,5.66-5.66A16.09,16.09,0,0,1,27.11,32.77Z"/>
+  </g>
+</svg>

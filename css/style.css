@@ -99,23 +99,36 @@ html, body {
 }
 
 .nav_bar #ui_progress {
-	width: 6.8em;
+	width: 7em;
+	height: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .nav_bar #ui_progress .progress_mark {
 	position: relative;
 	float: left;
-	width: 0.5em;
-	height: 0.5em;
-	margin: 2.25em 0.6em;
-	border-radius: 0.25em;
+	width: 0.52em;
+	height: 0.52em;
+	/*margin: 2.25em 0.6em;*/
+	border-radius: 50%;
 	background: #FFF;
-	border: 1px solid #AAA;
+	border: 1px solid #DDD;
 	box-sizing: border-box;
 	-webkit-transition: all 300ms ease-in-out;
 	-moz-transition: all 300ms ease-in-out;
 	-o-transition: all 300ms ease-in-out;
 	transition: all 300ms ease-in-out;
+}
+
+.nav_bar #ui_progress .progress_mark.progress {
+	border: 1px solid #AAA;
+	cursor: pointer;
+}
+
+.nav_bar #ui_progress .progress_mark.progress:hover {
+	border: 1px solid #555;
 }
 
 .nav_bar #ui_progress .progress_mark.active {
@@ -249,24 +262,24 @@ html, body {
 }
 
 #landing_title {
-	font-family: "Libre Baskerville", Serif;
+	font-family: "Rubik", sans-serif;
 	text-align: center;
 	font-size: 1.8em;
 	font-weight: 400;
-	letter-spacing: 0.1em;
+	letter-spacing: 0.15em;
 	text-transform: capitalize;
 	margin-top: 25vh;
 	margin-bottom: 1em;
 }
 
 #landing_title svg {
-	width: 1.5em;
-	height: 1.94em;
+	width: 1.25em;
+	height: 1.62em;
 	margin-right: 1em;
 }
 
 #get_started {
-	margin-top: 4em;
+	margin-top: 3.5em;
 	margin-bottom: 3em;
 	display: flex;
 	justify-content: center;
@@ -1512,7 +1525,7 @@ html, body {
 	font-size: 0.70em;
 	letter-spacing: 0.05em;
 	line-height: 1.8;
-	color: #666;
+	color: #333;
 	border-top: 1px solid #FFF;
 }
 
@@ -1525,7 +1538,7 @@ html, body {
 }
 
 #alt_div #alt_list_div #alt_message span.count {
-	color: #555;
+	color: #222;
 	font-weight: 500;
 }
 
