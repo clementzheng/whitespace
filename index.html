@@ -7,6 +7,7 @@
 	<title>Whitespace</title>
 	<meta name="description" content="Parametric editorial design app">
 	<meta name="author" content="Clement Zheng (clementzheng.info)">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" href="favicon.png">	
 
 	<!--ROBOTO-->
@@ -64,10 +65,10 @@
 			<img src="images/back_arrow.svg">
 		</div>
 		<div id="ui_progress">
-			<div class="progress_mark"></div>
-			<div class="progress_mark"></div>
-			<div class="progress_mark"></div>
-			<div class="progress_mark"></div>
+			<div id="pm_setup" title="structure page" class="progress_mark"></div>
+			<div id="pm_layout" title="arrange content" class="progress_mark"></div>
+			<div id="pm_order" title="define relations" class="progress_mark"></div>
+			<div id="pm_alt" title="explore alternatives" class="progress_mark"></div>
 		</div>
 		<div class="transition" id="next_button">
 			<img src="images/front_arrow.svg">
@@ -94,7 +95,7 @@
 	<div class="ui_screen" id="page_setup">
 		<div class="container">
 			<div class="eight column heading">
-				<h1>1&mdash;Structure the page</h1>
+				<h1>1&mdash;Structure page</h1>
 			</div>
 			<div class="three column" id="page_param">
 				<ul>
@@ -184,7 +185,7 @@
 	<div class="ui_screen" id="page_layout">
 		<div class="container">
 			<div class="eight column heading">
-				<h1>2&mdash;Place content</h1>
+				<h1>2&mdash;Arrange content</h1>
 			</div>
 			<div class="three column page_parent" id="page_layout_page">
 				

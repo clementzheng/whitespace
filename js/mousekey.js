@@ -111,6 +111,36 @@ $(document).keyup(function(e) {
         		}, 100);
 
         		landingStartClick();
+        		setTimeout(function() {
+        			$('#next_button').click();
+        			setTimeout(function() {
+	        			pageLayout.element.push(
+							new elementText(
+								'textObject-'+elementCount, 'Text Object',
+								1, 3, 2, 2, "Rubik", 40, 700, 'none', 'none', 0.0, 1.1, 'left', 'flex-start', 'black', 'none', 0
+							)
+						);
+						elementCount++;
+						pageLayout.element.push(
+							new elementText(
+								'textObject-'+elementCount, 'Text Object',
+								3, 4, 2, 2, "Rubik", 25, 300, 'none', 'none', 0.0, 1.1, 'left', 'flex-start', 'black', 'none', 0
+							)
+						);
+						elementCount++;
+						pageLayout.element.push(
+							new elementImage(
+								'imageObject-'+elementCount, 'https://source.unsplash.com/random?sig='+parseInt(Math.random()*1000),
+								0, 0, 4, 3
+							)
+						);
+						elementCount++;
+						pageLayout.renderElements('page_layout_page');
+						setTimeout(function() {
+							$('#next_button').click();
+						}, 200);
+	        		}, 200);
+        		}, 500);
         	}
         	break;
         case 37:
@@ -888,6 +918,7 @@ function updateTextObject(elementID) {
 //  INIT  //
 //        //
 ////////////
+
 function cellMarginBlockDisplay() {
 	if ($('.display_margin').hasClass('active')) {
 		$('.margin:not(.active)').toggleClass('active');
@@ -912,6 +943,27 @@ function cellMarginBlockDisplay() {
 
 
 function init() {
+
+	$('#pm_setup').on('click', function() {
+		if (pageSetup) {
+			goToScreen(mode, 'pageSetup');
+		}
+	});
+	$('#pm_layout').on('click', function() {
+		if (pageLayout) {
+			goToScreen(mode, 'pageLayout');
+		}
+	});
+	$('#pm_order').on('click', function() {
+		if (pageOrder) {
+			goToScreen(mode, 'pageOrder');
+		}
+	});
+	$('#pm_alt').on('click', function() {
+		if (pageAlt) {
+			goToScreen(mode, 'pageAlt');
+		}
+	});
 
 	$('#back_button').on('click', function() {
 		$('#next_button').removeClass('hide');
@@ -1084,6 +1136,7 @@ function init() {
 				pageOrder = {};
 				pageAlt = {};
 				pageSavedArr = [];
+				$('#saved_alt_div').removeClass('active');
 				mode = 'landing';
 				$('#warning_div.active').toggleClass('active');
 				$('#page_setup').css('left', '100%');
@@ -1095,6 +1148,7 @@ function init() {
 					$('#landing').toggleClass('active');
 					$('#landing').css('left', '0');
 				}, 300);
+				updatePageHeight();
 				break;
 			// case 'pageLayout':
 			// 	$('.margin:not(.active)').toggleClass('active');
@@ -1190,6 +1244,79 @@ function init() {
 
 		} 
 	});
+}
+
+function goToScreen(m, goTo) {
+	switch (m) {
+		case 'pageSetup':
+			updateAllPages(pageSetup);
+			break;
+		case 'pageLayout':
+			updateAllPages(pageLayout);
+			break;
+		case 'pageOrder':
+			updateAllPages(pageOrder);
+			break;
+		case 'pageAlt':
+			updateAllPages(pageAlt);
+			break;
+	}
+	mode = goTo;
+	editContentClick('', false);
+	switch (goTo) {
+		case 'pageSetup':
+			$('#page_layout').css('left', '100%');
+			$('#page_order').css('left', '100%');
+			$('#page_alt').css('left', '100%');
+			$('.progress_mark.active').toggleClass('active');
+			$('.progress_mark').eq(0).toggleClass('active');
+			break;
+		case 'pageLayout':
+			$('#page_setup').css('left', '-100%');
+			$('#page_order').css('left', '100%');
+			$('#page_alt').css('left', '100%');
+			$('.progress_mark.active').toggleClass('active');
+			$('.progress_mark').eq(1).toggleClass('active');
+			break;
+		case 'pageOrder':
+			$('#page_setup').css('left', '-100%');
+			$('#page_layout').css('left', '-100%');
+			$('#page_alt').css('left', '100%');
+			$('.progress_mark.active').toggleClass('active');
+			$('.progress_mark').eq(2).toggleClass('active');
+			break;
+		case 'pageAlt':
+			$('#page_setup').css('left', '-100%');
+			$('#page_layout').css('left', '-100%');
+			$('#page_order').css('left', '-100%');
+			$('.progress_mark.active').toggleClass('active');
+			$('.progress_mark').eq(3).toggleClass('active');
+			break;
+	}
+	if (pageSavedArr.length > 0) {
+		updateSavedPage(pageSetup);
+	}
+	setTimeout(function() {
+		$('.ui_screen.active').toggleClass('active');
+		switch (goTo) {
+		case 'pageSetup':
+			$('#page_setup').toggleClass('active');
+			$('#page_setup').css('left', '0');
+			break;
+		case 'pageLayout':
+			$('#page_layout').toggleClass('active');
+			$('#page_layout').css('left', '0');
+			break;
+		case 'pageOrder':
+			$('#page_order').toggleClass('active');
+			$('#page_order').css('left', '0');
+			break;
+		case 'pageAlt':
+			$('#page_alt').toggleClass('active');
+			$('#page_alt').css('left', '0');
+			break;
+		}
+	}, 300);
 }
 
 function dupPageOrder(pageID) {
@@ -1963,6 +2090,7 @@ function renderPageSetup() {
 
 	$('.margin:not(.active)').toggleClass('active');
 	$('.cell:not(.active)').toggleClass('active');
+	$('#pm_setup').addClass('progress');
 }
 
 function setPageStructure() {
@@ -1988,6 +2116,7 @@ function renderPageLayout() {
 
 	resetCellHighlight();
 	cellMarginBlockDisplay();
+	$('#pm_layout').addClass('progress');
 }
 
 function resetCellHighlight() {
@@ -2031,6 +2160,7 @@ function renderPageOrder() {
 
 	refreshElementOrderList();
 	cellMarginBlockDisplay();
+	$('#pm_order').addClass('progress');
 }
 
 function renderPageAlt() {
@@ -2080,6 +2210,7 @@ function renderPageAlt() {
 	}, 600);
 
 	cellMarginBlockDisplay();
+	$('#pm_alt').addClass('progress');
 }
 
 function altHighlightUI(pageDiv, pageObj, UImode) {
@@ -2190,6 +2321,8 @@ function altHighlightUI(pageDiv, pageObj, UImode) {
 						updateAllPages(pageObj);
 						updateSetupParam(pageObj);
 						refreshElementOrderList();
+
+						goToScreen(mode, 'pageLayout');
 
 						if (mode != 'pageAlt') {
 							$('#pageAlt_savedpage').toggleClass('edited');
