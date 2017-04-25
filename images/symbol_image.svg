@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <style>
+      .a {
+        opacity: 0.3;
+      }
+    </style>
+  </defs>
+  <title>Asset 66</title>
+  <g class="a">
+    <circle cx="37.27" cy="12.92" r="4.35"/>
+    <path d="M48,0H2A2,2,0,0,0,0,2V48a2,2,0,0,0,2,2H48a2,2,0,0,0,2-2V2A2,2,0,0,0,48,0ZM37.36,25.61l-7.94,7.94L14.14,18.28,3,29.42V3H47V35.25Z"/>
+  </g>
+</svg>

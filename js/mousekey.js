@@ -25,15 +25,20 @@ var cellSelectedCol = 'rgba(0, 255, 150, 0.6)';
 var mouseInWarningLeave = false;
 var mouseInColorPicker = false;
 var mouseInLayer = false;
+var mouseInSavedAltDiv = false;
+var mouseInHelpDiv = false;
+var altJustAdded = false;
 var colorPicking = false;
 var mousePos = {'x':0, 'y':0};
 var rememberMousePos = {'x':0, 'y':0};
 var cornerSize = 12;
 var boundingBoxSize = 3;
 
+var bgDark = false;
+
 
 $(document).scroll(function(e) {
-	if ($('body').width() > 800) {
+	if ($('body').width() > 1200) {
 		var h1 = $('#saved_alt_list').outerHeight();
 		var h2 = $('#saved_alt_title').outerHeight();
 		var h = 0;
@@ -68,6 +73,9 @@ $(document).scroll(function(e) {
 $(document).keyup(function(e) {
 	switch(e.which) {
 		case 27: // escape key maps to keycode `27`
+			if ($('#help_container').hasClass('active')) {
+				$('#help_container').removeClass('active');
+			}
 	        if ($('#warning_div').hasClass('active')) {
 	        	$('#warning_div.active').toggleClass('active');
 	        	$('#warning_leave').css('display', 'block');
@@ -111,36 +119,6 @@ $(document).keyup(function(e) {
         		}, 100);
 
         		landingStartClick();
-        		setTimeout(function() {
-        			$('#next_button').click();
-        			setTimeout(function() {
-	        			pageLayout.element.push(
-							new elementText(
-								'textObject-'+elementCount, 'Text Object',
-								1, 3, 2, 2, "Rubik", 40, 700, 'none', 'none', 0.0, 1.1, 'left', 'flex-start', 'black', 'none', 0
-							)
-						);
-						elementCount++;
-						pageLayout.element.push(
-							new elementText(
-								'textObject-'+elementCount, 'Text Object',
-								3, 4, 2, 2, "Rubik", 25, 300, 'none', 'none', 0.0, 1.1, 'left', 'flex-start', 'black', 'none', 0
-							)
-						);
-						elementCount++;
-						pageLayout.element.push(
-							new elementImage(
-								'imageObject-'+elementCount, 'https://source.unsplash.com/random?sig='+parseInt(Math.random()*1000),
-								0, 0, 4, 3
-							)
-						);
-						elementCount++;
-						pageLayout.renderElements('page_layout_page');
-						setTimeout(function() {
-							$('#next_button').click();
-						}, 200);
-	        		}, 200);
-        		}, 500);
         	}
         	break;
         case 37:
@@ -335,12 +313,25 @@ $(document).mousedown(function(e) {
 //                      //
 //////////////////////////
 
-$(document).on('click', function() {
+$(document).on('click', function(e) {
+
+	if (mode=='landing') {
+		$('.initial').removeClass('initial');
+	}
+
 	if (!mouseInColorPicker && !colorPicking) {
 		$('#color_picker_div').addClass('hide');
 	} else if (colorPicking) {
 		colorPicking = false;
 	}
+
+	if (!mouseInSavedAltDiv && $('#saved_alt_div').hasClass('open') && !altJustAdded) {
+		$('#saved_alt_div').removeClass('open');
+		updatePageHeight();
+	} else if (altJustAdded) {
+		altJustAdded = false;
+	}
+
 	switch (mode) {
 		case 'pageLayout':
 			switch (placeMode) {
@@ -944,6 +935,20 @@ function cellMarginBlockDisplay() {
 
 function init() {
 
+	setTimeout(function() {
+		$('.headline.initial').removeClass('initial');
+	}, 300);
+	$('.step').each(function(i) {
+		setTimeout(function() {
+			$('.step').eq(i).removeClass('initial');
+		}, 600*i+1200);
+		if (i==3) {
+			setTimeout(function() {
+				$('#landing_nav.initial').removeClass('initial');
+			}, 600*i+1700);
+		}
+	});
+
 	$('#pm_setup').on('click', function() {
 		if (pageSetup) {
 			goToScreen(mode, 'pageSetup');
@@ -965,7 +970,44 @@ function init() {
 		}
 	});
 
+	$('#help_window').on('mouseenter', function() {
+		mouseInHelpDiv = true;
+	});
+	$('#help_window').on('mouseleave', function() {
+		mouseInHelpDiv = false;
+	});
+	$('#help_container').on('click', function() {
+		if (!mouseInHelpDiv) {
+			$('#help_container').removeClass('active');
+		}
+	});
+	$('#close_help').on('click', function() {
+		$('#help_container').removeClass('active');
+	});
+	$('.help_button').on('click', function() {
+		$('#help_container').addClass('active');
+		switch(mode) {
+			case 'pageSetup':
+				$('.help_item.active').toggleClass('active');
+				$('#help_structure').addClass('active');
+				break;
+			case 'pageLayout':
+				$('.help_item.active').toggleClass('active');
+				$('#help_content').addClass('active');
+				break;
+			case 'pageOrder':
+				$('.help_item.active').toggleClass('active');
+				$('#help_relations').addClass('active');
+				break;
+			case 'pageAlt':
+				$('.help_item.active').toggleClass('active');
+				$('#help_alt').addClass('active');
+				break;
+		}
+	});
+
 	$('#back_button').on('click', function() {
+		$('#help_container').removeClass('active');
 		$('#next_button').removeClass('hide');
 		switch (mode) {
 			case 'pageSetup':
@@ -1048,6 +1090,7 @@ function init() {
 	});
 
 	$('#next_button').on('click', function() {
+		$('#help_container').removeClass('active');
 		$('#next_button').removeClass('hide');
 		switch(mode) {
 			case 'pageSetup':
@@ -1247,6 +1290,7 @@ function init() {
 }
 
 function goToScreen(m, goTo) {
+	$('#next_button').removeClass('hide');
 	switch (m) {
 		case 'pageSetup':
 			updateAllPages(pageSetup);
@@ -1286,6 +1330,7 @@ function goToScreen(m, goTo) {
 			$('.progress_mark').eq(2).toggleClass('active');
 			break;
 		case 'pageAlt':
+			$('#next_button').addClass('hide');
 			$('#page_setup').css('left', '-100%');
 			$('#page_layout').css('left', '-100%');
 			$('#page_order').css('left', '-100%');
@@ -1296,6 +1341,9 @@ function goToScreen(m, goTo) {
 	if (pageSavedArr.length > 0) {
 		updateSavedPage(pageSetup);
 	}
+	resetCellHighlight();
+	cellMarginBlockDisplay();
+	$('#layout_toolbar .active').removeClass('active');
 	setTimeout(function() {
 		$('.ui_screen.active').toggleClass('active');
 		switch (goTo) {
@@ -1664,6 +1712,9 @@ function initPageSetup() {
 	$('.param input[type=number]').on('change', function() {
 		renderPageSetup();
 	});
+	$('.param input[name=pbg_color]').on('change', function() {
+		renderPageSetup();
+	});
 }
 
 function updateSetupParam(pageObj) {
@@ -1848,9 +1899,9 @@ function initPageLayout() {
 				$('input[name=R_val]').val(rgb.r);
 				$('input[name=G_val]').val(rgb.g);
 				$('input[name=B_val]').val(rgb.b);
+				updateColorInput();
 			}
 		}
-		updateColorInput();
 	});
 
 	$('#color_rect').on('click', function(e) {
@@ -1911,9 +1962,10 @@ function initPageLayout() {
 				$('#color_rect img').css({
 					'opacity' : val/100,
 				});
+
+				updateColorInput();
 			}
 		}
-		updateColorInput();
 	});
 
 	$('#grey_rect').on('click', function(e) {
@@ -1998,6 +2050,15 @@ function initPageLayout() {
 		$('#color_picker_div').removeClass('hide');
 		e.stopImmediatePropagation();
 	});
+	$('#pbg_color_dropper').on('click', function(e) {
+		$('#color_picker_div').css({
+			'top': $(this).offset().top - 350 +'px',
+			'left': $(this).offset().left - 0 + 'px'
+		});
+		updateColorPicker('input[name=pbg_color]', $('input[name=pbg_color]').val());
+		$('#color_picker_div').removeClass('hide');
+		e.stopImmediatePropagation();
+	});
 }
 
 function initPageOrder() {
@@ -2055,6 +2116,14 @@ function initPageAlt() {
 		$('#saved_alt_div').toggleClass('open');
 		updatePageHeight();
 	});
+
+	$('#saved_alt_div').on('mouseenter', function() {
+		mouseInSavedAltDiv = true;
+	});
+
+	$('#saved_alt_div').on('mouseleave', function() {
+		mouseInSavedAltDiv = false;
+	});
 }
 
 function renderPageSetup() {
@@ -2070,9 +2139,10 @@ function renderPageSetup() {
 	var cC = Math.floor(parseFloat($('input[name=column_count]').val()));
 	var rC = Math.floor(parseFloat($('input[name=row_count]').val()));
 	var g = parseFloat($('input[name=gutter]').val())*factor;
+	var bg = $('input[name=pbg_color]').val();
 
 	if ($.isEmptyObject(pageSetup)) {
-		pageSetup = new page('pageSetup', pW, pH, m1, m2, m3, m4, rC, cC, g);
+		pageSetup = new page('pageSetup', pW, pH, m1, m2, m3, m4, rC, cC, g, bg);
 		pageSetup.render('page_setup_page');
 	} else {
 		pageSetup.w = pW;
@@ -2084,6 +2154,7 @@ function renderPageSetup() {
 		pageSetup.rowCount = rC;
 		pageSetup.colCount = cC;
 		pageSetup.gutter = g;
+		pageSetup.bgColor = bg;
 		pageSetup.calDim();
 		updateAllPages(pageSetup);
 	}
@@ -2091,6 +2162,7 @@ function renderPageSetup() {
 	$('.margin:not(.active)').toggleClass('active');
 	$('.cell:not(.active)').toggleClass('active');
 	$('#pm_setup').addClass('progress');
+	calContrast();
 }
 
 function setPageStructure() {
@@ -2110,13 +2182,15 @@ function renderPageLayout() {
 		var cC = pageSetup.colCount;
 		var rC = pageSetup.rowCount;
 		var g = pageSetup.gutter;
-		pageLayout = new page('pageLayout', pW, pH, m1, m2, m3, m4, rC, cC, g);
+		var bg = pageSetup.bgColor;
+		pageLayout = new page('pageLayout', pW, pH, m1, m2, m3, m4, rC, cC, g, bg);
 		pageLayout.render('page_layout_page');
 	}
 
 	resetCellHighlight();
 	cellMarginBlockDisplay();
 	$('#pm_layout').addClass('progress');
+	calContrast();
 }
 
 function resetCellHighlight() {
@@ -2149,7 +2223,8 @@ function renderPageOrder() {
 		var cC = pageSetup.colCount;
 		var rC = pageSetup.rowCount;
 		var g = pageSetup.gutter;
-		pageOrder = new page('pageOrder', pW, pH, m1, m2, m3, m4, rC, cC, g);
+		var bg = pageSetup.bgColor;
+		pageOrder = new page('pageOrder', pW, pH, m1, m2, m3, m4, rC, cC, g, bg);
 		pageOrder.render('page_order_page');
 		pageOrder.element = [];
 		for (i in pageLayout.element) {
@@ -2161,6 +2236,7 @@ function renderPageOrder() {
 	refreshElementOrderList();
 	cellMarginBlockDisplay();
 	$('#pm_order').addClass('progress');
+	calContrast();
 }
 
 function renderPageAlt() {
@@ -2176,9 +2252,10 @@ function renderPageAlt() {
 		var cC = pageSetup.colCount;
 		var rC = pageSetup.rowCount;
 		var g = pageSetup.gutter;
+		var bg = pageSetup.bgColor;
 
 		if (!pageAlt) {
-			pageAlt = new page('pageAlt', pW, pH, m1, m2, m3, m4, rC, cC, g);
+			pageAlt = new page('pageAlt', pW, pH, m1, m2, m3, m4, rC, cC, g, bg);
 		}
 		pageAlt.render('page_alt_page');
 
@@ -2211,6 +2288,7 @@ function renderPageAlt() {
 
 	cellMarginBlockDisplay();
 	$('#pm_alt').addClass('progress');
+	calContrast();
 }
 
 function altHighlightUI(pageDiv, pageObj, UImode) {
@@ -2256,10 +2334,9 @@ function altHighlightUI(pageDiv, pageObj, UImode) {
 					$(this).toggleClass('saved');
 					$('.page_box.clicked').toggleClass('clicked');
 					pageDiv.find('.page_box').toggleClass('clicked');
-					if (!$('#saved_alt_div.active').hasClass('open')) {
-						$('#saved_alt_div.active').toggleClass('open');
-					}
+					$('#saved_alt_div.active').addClass('open');
 					updatePageHeight();
+					altJustAdded = true;
 				});
 				break;
 			case 'saved':
@@ -2458,7 +2535,7 @@ function generateAlternatives(pageObj, altCount) {
 				}
 			}	
 		}
-		if (intersectCount <= pageObjIntersect + 3*cutOff) {
+		if (intersectCount <= pageObjIntersect + pageObj.element.length*cutOff) {
 			randomArr.push(arr);
 			loopCount--;
 		} else {
@@ -2604,7 +2681,8 @@ function generateAlternatives(pageObj, altCount) {
 	var resultArr = [];
 
 	var resultCount = altCount > filterArr.length ? filterArr.length : altCount;
-	var gap = Math.ceil(filterArr.length*cutOff/resultCount);
+	//var gap = Math.ceil(filterArr.length*cutOff/resultCount);
+	var gap = filterArr.length/resultCount;
 	
 	for (var i=0; i<resultCount; i++) {
 		resultArr.push(Math.floor((i*gap)+Math.random()*gap));
@@ -2621,8 +2699,9 @@ function generateAlternatives(pageObj, altCount) {
 		var cC = pageSetup.colCount;
 		var rC = pageSetup.rowCount;
 		var g = pageSetup.gutter;
+		var bg = pageSetup.bgColor;
 
-		var tempPage = new page('pageAlt_'+i+'_'+Date.now(), pW, pH, m1, m2, m3, m4, rC, cC, g);
+		var tempPage = new page('pageAlt_'+i+'_'+Date.now(), pW, pH, m1, m2, m3, m4, rC, cC, g, bg);
 		var elePos = $.extend(true, {}, filterArr[distArr[resultArr[i]].index]);
 
 		tempPage.element = [];
@@ -2667,6 +2746,8 @@ function renderAltPages(pageArr) {
 			$(el).toggleClass('active');
 		}, 500+i*100);
 	});
+
+	calContrast();
 }
 
 function addSavedPage(pageObj) {
@@ -2711,6 +2792,7 @@ function renderSavedPages(pageArr) {
 	}
 	
 	cellMarginBlockDisplay();
+	calContrast();
 }
 
 function updatePageHeight() {
@@ -2886,6 +2968,32 @@ function updateColorPicker(inputObj, col) {
 	updateColorFormat($('input[name=R_val]').val(), $('input[name=G_val]').val(), $('input[name=B_val]').val());
 }
 
+function calContrast() {
+	if (!$.isEmptyObject(pageSetup)) {
+		var cTemp = pageSetup.bgColor;	
+		$('body').append('<div id="dummy_color"></div');
+		$('#dummy_color').css('background', cTemp);
+		var c = $('#dummy_color').css('background');
+		$('#dummy_color').remove();
+		var rgb = c.split('(')[1].split(')')[0].split(',');
+		switch(rgb.length) {
+			case 3:
+				var v = rgb2hsv(rgb[0], rgb[1], rgb[2]).v;
+				bgDark = v < 70 ? true : false;
+				break;
+			case 4:
+				var v = rgb2hsv(rgb[0], rgb[1], rgb[2]).v;
+				bgDark = rgb[3] < 0.5 ? false : v < 70 ? true : false;
+				break;
+		}
+	}
+	if (bgDark) {
+		$('.page').addClass('dark');
+	} else {
+		$('.page').removeClass('dark');
+	}
+}
+
 function updateColorInput() {
 	if (!$('#color_picker_div').hasClass('hide')) {
 		var colVal = 'rgba('+$('input[name=R_val]').val()+','+$('input[name=G_val]').val()+','+$('input[name=B_val]').val()+','+$('input[name=A_val]').val()+')';
@@ -3034,7 +3142,8 @@ function loadPageAlt(f) {
 		var cC = f.pageSavedArr[i].colCount;
 		var rC = f.pageSavedArr[i].rowCount;
 		var g = f.pageSavedArr[i].gutter;
-		var tempPage = new page(f.pageSavedArr[i].id, pW, pH, m1, m2, m3, m4, rC, cC, g);
+		var bg = f.pageSavedArr[i].bgColor;
+		var tempPage = new page(f.pageSavedArr[i].id, pW, pH, m1, m2, m3, m4, rC, cC, g, bg);
 		for (j in f.pageSavedArr[i].element) {
 			tempPage.element.push($.extend(true, {}, f.pageSavedArr[i].element[j]));
 		}
