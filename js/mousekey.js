@@ -1004,6 +1004,7 @@ function init() {
 				$('#help_alt').addClass('active');
 				break;
 		}
+		$('#help_window').scrollTop(0);
 	});
 
 	$('#back_button').on('click', function() {
