@@ -36,6 +36,11 @@ var boundingBoxSize = 3;
 
 var bgDark = false;
 
+window.onbeforeunload = function(e) {
+  var dialogText = 'Have you saved your work?';
+  e.returnValue = dialogText;
+  return dialogText;
+};
 
 $(document).scroll(function(e) {
 	if ($('body').width() > 1200) {
@@ -75,6 +80,7 @@ $(document).keyup(function(e) {
 		case 27: // escape key maps to keycode `27`
 			if ($('#help_container').hasClass('active')) {
 				$('#help_container').removeClass('active');
+				logEvent(mode);
 			}
 	        if ($('#warning_div').hasClass('active')) {
 	        	$('#warning_div.active').toggleClass('active');
@@ -90,6 +96,7 @@ $(document).keyup(function(e) {
 		        			if ($('#view_fullscreen').hasClass('active')) {
 					        	$('#view_fullscreen').toggleClass('active');
 					        	placeMode = 'none';
+					        	logEvent(mode);
 					        }
 		        			break;
 		        		case 'pageOrder':
@@ -98,6 +105,7 @@ $(document).keyup(function(e) {
 		        		case 'pageAlt':
 		        			if ($('#view_fullscreen').hasClass('active')) {
 					        	$('#view_fullscreen').toggleClass('active');
+					        	logEvent(mode);
 					        	if ($('.page_box.clicked').length > 0) {
 						        	$('html,body').animate({
 							          scrollTop: $('.page_box.clicked').offset().top-150
@@ -279,6 +287,12 @@ var mouseDown = false;
 
 $(document).mouseup(function(e) {
 	mouseDown = false;
+	if (elementMove) {
+		logEvent('elementMoved');
+	}
+	if (elementScale) {
+		logEvent('elementScaled');
+	}
 	if (elementMove || elementScale) {
 		elementMove = false;
 		elementScale = false;
@@ -393,6 +407,7 @@ $(document).on('click', function(e) {
 								$('input[name=padding]').val()
 							)
 						);
+						logEvent('elementAdded-text-'+pageLayout.element.length);
 						elementCount++;
 						clearLayoutSelection();
 						pageLayout.renderElements('page_layout_page');
@@ -432,6 +447,7 @@ $(document).on('click', function(e) {
 								cStart, rStart, cEnd-cStart+1, rEnd-rStart+1
 							)
 						);
+						logEvent('elementAdded-image-'+pageLayout.element.length);
 						elementCount++;
 						clearLayoutSelection();
 						pageLayout.renderElements('page_layout_page');
@@ -706,6 +722,7 @@ function editContentClick(elementID, bool) {
 		                break;
 		            }
 		        }
+		        logEvent('elementDeleted-'+pageLayout.element.length);
 		        $('#layout_content_edit.active').toggleClass('active');
 		        $('#layout_content_edit .edit_image.active').toggleClass('active');
 		        $('#layout_content_edit .edit_text.active').toggleClass('active');
@@ -979,13 +996,16 @@ function init() {
 	$('#help_container').on('click', function() {
 		if (!mouseInHelpDiv) {
 			$('#help_container').removeClass('active');
+			logEvent(mode);
 		}
 	});
 	$('#close_help').on('click', function() {
 		$('#help_container').removeClass('active');
+		logEvent(mode);
 	});
 	$('.help_button').on('click', function() {
 		$('#help_container').addClass('active');
+		logEvent('help');
 		switch(mode) {
 			case 'pageSetup':
 				$('.help_item.active').toggleClass('active');
@@ -1088,6 +1108,7 @@ function init() {
 				}, 300);
 				break;
 		}
+		logEvent(mode);
 	});
 
 	$('#next_button').on('click', function() {
@@ -1158,6 +1179,7 @@ function init() {
 				}, 300);
 				break;
 		}
+		logEvent(mode);
 	});
 
 	$('#warning_div').on('click', function() {
@@ -1221,6 +1243,7 @@ function init() {
 			// 	}, 300);
 			// 	break;
 		}
+		logEvent(mode);
 	});
 
 	$('.display_margin').on('click', function() {
@@ -1339,6 +1362,7 @@ function goToScreen(m, goTo) {
 			$('.progress_mark').eq(3).toggleClass('active');
 			break;
 	}
+	logEvent(mode);
 	if (pageSavedArr.length > 0) {
 		updateSavedPage(pageSetup);
 	}
@@ -1464,6 +1488,8 @@ function returnElementOrderY(elem1, elem2) {
 }
 
 function renderFullscreenPage(divID, pageObject) {
+
+	logEvent('fullscreen');
 	$('html, body').animate({ scrollTop: 0 }, 'fast');
 	$('#view_fullscreen:not(.active)').toggleClass('active');
 	$('#fullscreen_page').css('width', 50 + '%');
@@ -1534,6 +1560,7 @@ function renderFullscreenPage(divID, pageObject) {
 	$('#exit_fullscreen').on('click', function() {
 		$('#view_fullscreen').toggleClass('active');
 		placeMode = 'none';
+		logEvent(mode);
 	});
 	$('#view_fullscreen').css('min-height', $(document).outerHeight()+'px');
 
@@ -1591,6 +1618,7 @@ function landingStartClick() {
 		renderPageSetup();
 	}, 300);
 	$('#export_project').addClass('active');
+	logEvent('pageSetup');
 }
 
 function initPageSetup() {
@@ -2078,6 +2106,7 @@ function initPageOrder() {
 		}
 		refreshElementOrderList();
 		pageLayout.order = dupPageOrder(pageOrder);
+		logEvent('orderChanged-'+pageOrder.order.length);
 	});
 
 	$('#clear_all_order').on('click', function() {
@@ -2085,6 +2114,7 @@ function initPageOrder() {
 		pageOrder.order = [];
 		refreshElementOrderList();
 		pageLayout.order = dupPageOrder(pageOrder);
+		logEvent('orderChanged-'+pageOrder.order.length);
 	});
 
 	$('.edit_order_icon').on('click', function() {
@@ -2099,18 +2129,19 @@ function initPageOrder() {
 			pageOrder.setElementOrder(elementIDA, elementIDB, stateX, stateY);
 			refreshElementOrderList();
 		}
+		logEvent('orderChanged-'+pageOrder.order.length);
 	});
 }
 
 function initPageAlt() {
 	$('#refresh_alternatives').on('click', function() {
 		updateAltMessage(true);
+		logEvent('refreshedAlternatives');
 		setTimeout(function() {
 			pageAltArr = [];
 			pageAltArr = generateAlternatives(pageAlt, 12);
 			renderAltPages(pageAltArr);
 		}, 200);
-		
 	});
 
 	$('#saved_alt_title').on('click', function() {
@@ -2338,6 +2369,7 @@ function altHighlightUI(pageDiv, pageObj, UImode) {
 					$('#saved_alt_div.active').addClass('open');
 					updatePageHeight();
 					altJustAdded = true;
+					logEvent('addSavedPage-'+pageSavedArr.length);
 				});
 				break;
 			case 'saved':
@@ -2369,6 +2401,7 @@ function altHighlightUI(pageDiv, pageObj, UImode) {
 						}
 					}
 					renderSavedPages(pageSavedArr);
+					logEvent('removedSavedPage-'+pageSavedArr.length);
 				});
 
 				pageDiv.children('.page_box').append(
@@ -2401,6 +2434,7 @@ function altHighlightUI(pageDiv, pageObj, UImode) {
 						refreshElementOrderList();
 
 						goToScreen(mode, 'pageLayout');
+						logEvent('editSavedPage');
 
 						if (mode != 'pageAlt') {
 							$('#pageAlt_savedpage').toggleClass('edited');
@@ -3020,6 +3054,7 @@ function updateColorFormat(r, g, b) {
 }
 
 function exportProject() {
+	logEvent('export');
 	var projectObj = {
 		'mode': mode,
 		'pageSetup' : $.extend(true, {}, pageSetup),
@@ -3027,10 +3062,14 @@ function exportProject() {
 		'pageOrder' : $.extend(true, {}, pageOrder),
 		'pageAlt' : $.extend(true, {}, pageAlt),
 		'pageSavedArr' : [],
-		'elementCount' : elementCount
+		'elementCount' : elementCount,
+		'eventLog' : []
 	};
 	for (i in pageSavedArr) {
 		projectObj.pageSavedArr.push($.extend(true, {}, pageSavedArr[i]));
+	}
+	for (i in eventLog) {
+		projectObj.eventLog.push($.extend(true, {}, eventLog[i]));
 	}
 	var saveText = JSON.stringify(projectObj);
 	var blob = new Blob([saveText], {type: "text/plain;charset=utf-8"});
@@ -3056,6 +3095,9 @@ function loadProject(e) {
 					}
 				}
 			}
+		}
+		for (i in JSONfile.eventLog) {
+			eventLog.push(JSONfile.eventLog[i]);
 		}
 		switch(count) {
 			case 1:
@@ -3183,4 +3225,11 @@ function updateAllPages(pageObj) {
 		pageAlt.renderElements('page_alt_page');
 	}
 	cellMarginBlockDisplay();
+}
+
+var eventLog = [];
+
+function logEvent(s) {
+	var evt = {'time':Date.now(), 'event':s};
+	eventLog.push(evt);
 }
