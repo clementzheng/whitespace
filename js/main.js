@@ -1,8 +1,9 @@
-function page(name, width, height, topMargin, rightMargin, bottomMargin, leftMargin, rC, cC, gut) {
+function page(name, width, height, topMargin, rightMargin, bottomMargin, leftMargin, rC, cC, gut, bg) {
 
 	this.id = name;
     this.w = width;
     this.h = height;
+    this.bgColor = bg;
     this.marginDim = [topMargin, rightMargin, bottomMargin, leftMargin];
     this.marginPos = [
     	{'x': leftMargin/width, 'y': topMargin/height}, //TOP-LEFT
@@ -48,8 +49,15 @@ function page(name, width, height, topMargin, rightMargin, bottomMargin, leftMar
     	var divW = $('#'+divID).width();
     	var divH = this.h/this.w * 100;
     	$('#'+divID+' .page_container').css('padding-bottom', divH+'%');
-    	$('#'+divID+' .page_container').append('<div class="page"></div>');
+        if (bgDark) {
+            $('#'+divID+' .page_container').append('<div class="page dark"></div>');
+        } else {
+            $('#'+divID+' .page_container').append('<div class="page"></div>');
+        }
     	$('#'+divID+' .page_container .page').append('<div class="margin"></div>');
+        $('#'+divID+' .page_container .page').css({
+            'background': this.bgColor
+        });
     	$('#'+divID+' .page_container .page .margin').css({
     		'position': 'absolute',
     		'width': (this.w-(this.marginDim[1]+this.marginDim[3]))/this.w * 100 + '%',
@@ -202,7 +210,7 @@ function page(name, width, height, topMargin, rightMargin, bottomMargin, leftMar
         $('.highlight_box .change_layer #layer_up').off();
         $('.highlight_box .change_layer #layer_down').off();
 
-        $('#'+divID+' #'+elementID+' .highlight_box').html('<div class="corner top_left"></div><div class="corner top_right"></div><div class="corner bottom_right"></div><div class="corner bottom_left"></div><div class="change_layer"><div title="bring forward" class="layer_up layer_button"><img src="images/layer_up.svg"></div><div title="bring backward" class="layer_down layer_button"><img src="images/layer_down.svg"></div></div>');
+        $('#'+divID+' #'+elementID+' .highlight_box').html('<div class="corner top_left"></div><div class="corner top_right"></div><div class="corner bottom_right"></div><div class="corner bottom_left"></div><div class="change_layer"><div title="bring forward" class="layer_up layer_button"></div><div title="bring backward" class="layer_down layer_button"></div></div>');
         $('#'+divID+' #'+elementID+' .highlight_box .corner').css({
             'position': 'absolute',
             'width': cornerSize + 'px',
