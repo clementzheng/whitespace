@@ -808,22 +808,22 @@ li.param .color_picker {
 }
 
 #layout_toolbar div#place_text span {
-	left: 18.0em;
+	left: 22.5em;
 }
 
 #layout_toolbar div#place_image span {
-	left: 13.5em;
-}
-
-#layout_toolbar div#place_edit span {
-	left: 13.5em;
+	left: 18.0em;
 }
 
 #layout_toolbar div#edit_content span {
-	left: 9em;
+	left: 13.5em;
 }
 
 #layout_toolbar div#edit_view span {
+	left: 9em;
+}
+
+#layout_toolbar div#save_dup span {
 	left: 4.5em;
 }
 
