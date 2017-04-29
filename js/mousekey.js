@@ -829,7 +829,7 @@ function updateTextarea(ele) {
 }
 
 function updateImgObject(elementID) {
-	logEvent(mode+'-'+updateImage);
+	logEvent(mode+'-updateImage');
 	var elemID = elementID.split('_')[0];
 	for (i in pageLayout.element) {
 		if (pageLayout.element[i].id==elemID) {
@@ -845,7 +845,7 @@ function updateImgObject(elementID) {
 }
 
 function updateTextObject(elementID) {
-	logEvent(mode+'-'+updateText);
+	logEvent(mode+'-updateText');
 	var elemID = elementID.split('_')[0];
 	for (i in pageLayout.element) {
         if (pageLayout.element[i].id==elemID) {
