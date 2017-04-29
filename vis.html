@@ -87,12 +87,19 @@ function generateVis() {
 			eventLog.push([]);
 			activityStart = JSONObj[i].time;
 			activityLog.push([]);
-			activityLog[activityLog.length-1].push({'time':JSONObj[i].time - activityStart, activityCounter});
-			activityCounter++;
+			activityCounter = Math.floor(activityCounter/1000000)*1000000 + 1000000;
+			activityLog[activityLog.length-1].push({'time':JSONObj[i].time - activityStart, 'activity':activityCounter});
 		} else {
 			eventLog[eventLog.length-1].push(JSONObj[i]);
-			activityLog[activityLog.length-1].push({'time':JSONObj[i].time - activityStart, activityCounter});
-			activityCounter++;
+			if (JSONObj[i].event=='pageSetup' ||
+				JSONObj[i].event=='pageLayout' ||
+				JSONObj[i].event=='pageOrder' ||
+				JSONObj[i].event=='pageAlt' ) {
+				activityCounter = Math.floor(activityCounter/1000000)*1000000 + 1000000;
+			} else {
+				activityCounter = activityCounter + 1;
+			}
+			activityLog[activityLog.length-1].push({'time':JSONObj[i].time - activityStart, 'activity':activityCounter});
 		}
 	}
 
