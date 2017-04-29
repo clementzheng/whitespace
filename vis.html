@@ -1,0 +1,446 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Whitespace Vis</title>
+	<meta name="description" content="Process visualization">
+	<meta name="author" content="Clement Zheng (clementzheng.info)">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="favicon.png">	
+
+	<!--ROBOTO-->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+
+	<!--ROBOTO MONO-->
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono:100,100i,300,300i,400,400i,500,500i,700,700i" rel="stylesheet">
+	
+	<!--SCRIPTS-->
+	<script language="javascript" type="text/javascript" src="js/lib/FileSaver.js"></script>
+	<script language="javascript" type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/lib/jquery-ui.min.js"></script>
+	
+</head>
+
+<body>
+	<div id="control_panel">
+		<div class="controls">
+			<label for="json_textarea">
+			JSON Log
+			</label>
+			<textarea name="json_textarea"></textarea>
+		</div>
+		<div class="controls">
+			<label for="minute_height">
+			Minute height (px)
+			</label>
+			<input type="number" name="minute_height" min="1.0" step="0.1" value="200">
+		</div>
+		<div class="controls">
+			<input type="checkbox" name="events_text_check" checked>
+			<label for="events_text_check">
+				Show event label
+			</label>
+			<br>
+			<input type="checkbox" name="events_check" checked>
+			<label for="events_check">
+				Show event line
+			</label>
+		</div>
+		<div class="controls">
+			<div class="button" onclick="generateVis()">
+				generate
+			</div>
+		</div>
+	</div>
+	<div id="vis_div">
+		<canvas id="vis">
+		</canvas>
+	</div>
+</body>
+
+<script>
+
+function generateVis() {
+
+	var colW = 100;
+	var colGut = 10;
+	var topBuffer = 50;
+	var leftBuffer = 80;
+	var rightBuffer = 100;
+
+	var c = document.getElementById('vis');
+	var ctx = c.getContext('2d');
+
+	var JSONString = $('textarea[name=json_textarea]').val();
+	var JSONObj = JSON.parse(JSONString);
+	var mH = $('input[name=minute_height]').val();
+
+	var eventLog = [];
+	var activityLog = [];
+	var activityCounter = 0;
+	var activityStart = 0;
+
+	for (i in JSONObj) {
+		if (JSONObj[i].event=='start') {
+			eventLog.push([]);
+			activityStart = JSONObj[i].time;
+			activityLog.push([]);
+			activityLog[activityLog.length-1].push({'time':JSONObj[i].time - activityStart, activityCounter});
+			activityCounter++;
+		} else {
+			eventLog[eventLog.length-1].push(JSONObj[i]);
+			activityLog[activityLog.length-1].push({'time':JSONObj[i].time - activityStart, activityCounter});
+			activityCounter++;
+		}
+	}
+
+	console.log(activityLog);
+
+	var timeGap = [];
+
+	for (i in eventLog) {
+		var start = eventLog[i][0].time;
+		var end = eventLog[i][eventLog[i].length-1].time;
+		timeGap.push([start, end, end-start]);
+	}
+
+	var totalTime = 0;
+	for (i in timeGap) {
+		totalTime = totalTime + (timeGap[i][1]-timeGap[i][0]);
+	}
+
+	var cW = (colW + colGut * 2) * 4 + leftBuffer + rightBuffer;
+	var cH = topBuffer*2 + totalTime/60000*mH;
+
+	$('#vis').attr('width', cW);
+	$('#vis').attr('height', cH);
+
+	var colPosX = [leftBuffer+colGut+0*(colW+2*colGut), leftBuffer+colGut+1*(colW+2*colGut), leftBuffer+colGut+2*(colW+2*colGut), leftBuffer+colGut+3*(colW+2*colGut)];
+
+	ctx.font = "15px Roboto Mono";
+	ctx.fillText("1", colPosX[0], topBuffer/3);
+	ctx.fillText("2", colPosX[1], topBuffer/3);
+	ctx.fillText("3", colPosX[2], topBuffer/3);
+	ctx.fillText("4", colPosX[3], topBuffer/3);
+
+	ctx.font = "9px Roboto Mono";
+	ctx.fillText("Structure Page", colPosX[0], topBuffer/3*2);
+	ctx.fillText("Arrange Content", colPosX[1], topBuffer/3*2);
+	ctx.fillText("Define Relationships", colPosX[2], topBuffer/3*2);
+	ctx.fillText("Explore Alternatives", colPosX[3], topBuffer/3*2);
+
+	var totalMinutes = totalTime / 60000;
+
+	ctx.font = "12px Roboto Mono";
+	ctx.textAlign = "end";
+
+	for (var i=0; i<totalMinutes; i=i+0.5) {
+		if (i%1==0.5) {
+			ctx.fillText(i, leftBuffer/2-12, topBuffer+12+i*mH);
+			ctx.beginPath();
+			ctx.moveTo(leftBuffer/2, topBuffer+i*mH+0.5);
+			ctx.lineTo(cW-rightBuffer, topBuffer+i*mH+0.5);
+		} else {
+			ctx.fillText(i, leftBuffer/2-12, topBuffer+12+i*mH+0.5);
+			ctx.beginPath();
+			ctx.moveTo(leftBuffer/2, topBuffer+i*mH+0.5);
+			ctx.lineTo(cW-rightBuffer, topBuffer+i*mH+0.5);
+		}
+		ctx.strokeStyle = "#DDD";
+		ctx.lineWidth = 1.0;
+		ctx.stroke();
+	}
+
+	var pathPt = [{'x':colPosX[0], 'y':topBuffer}];
+
+	var yPos = topBuffer;
+	var prevSegment = 0;
+	var pMode = 'pageSetup';
+
+	for (i in eventLog) {
+		yPos = yPos + prevSegment; 
+		var startTime = timeGap[i][0];
+		var endTime = timeGap[i][1];
+		prevSegment = (endTime-startTime) / 60000 * mH;
+		for (j in eventLog[i]) {
+			var delta = (eventLog[i][j].time-startTime) / 60000 * mH;
+			var eventItem = eventLog[i][j].event.split('-');
+			var mode = eventItem[0];
+			if (mode!=pMode) {
+				switch (pMode) {
+					case 'pageSetup':
+						pathPt.push({'x':colPosX[0], 'y':yPos+delta});
+						break;
+					case 'pageLayout':
+						pathPt.push({'x':colPosX[1], 'y':yPos+delta});
+						break;
+					case 'pageOrder':
+						pathPt.push({'x':colPosX[2], 'y':yPos+delta});
+						break;
+					case 'pageAlt':
+						pathPt.push({'x':colPosX[3], 'y':yPos+delta});
+						break;
+				}
+			}
+			switch (mode) {
+				case 'pageSetup':
+					pathPt.push({'x':colPosX[0], 'y':yPos+delta});
+					break;
+				case 'pageLayout':
+					pathPt.push({'x':colPosX[1], 'y':yPos+delta});
+					break;
+				case 'pageOrder':
+					pathPt.push({'x':colPosX[2], 'y':yPos+delta});
+					break;
+				case 'pageAlt':
+					pathPt.push({'x':colPosX[3], 'y':yPos+delta});
+					break;
+			}
+			pMode = mode;
+		}
+	}
+
+
+	var rectWidth = 25;
+	for (var i=0; i<pathPt.length-1; i++) {
+		if (pathPt[i].x-pathPt[i+1].x == 0) {
+			ctx.beginPath();
+			ctx.rect(pathPt[i].x, Math.floor(pathPt[i].y), rectWidth, Math.floor(pathPt[i+1].y)-Math.floor(pathPt[i].y));
+			ctx.fillStyle = "#AAA";
+			ctx.fill();
+		} else {
+			ctx.beginPath();
+			var x1 = pathPt[i].x < pathPt[i+1].x ? pathPt[i].x : pathPt[i+1].x;
+			var x2 = pathPt[i].x > pathPt[i+1].x ? pathPt[i].x : pathPt[i+1].x;
+			ctx.rect(x1, Math.floor(pathPt[i].y), x2-x1+rectWidth, 2);
+			ctx.fillStyle = "#AAA";
+			ctx.fill();
+		}
+	}
+
+	var session = 0;
+	for (i in timeGap) {
+		var sessionY = session / 60000 * mH;
+		ctx.beginPath();
+		ctx.moveTo(leftBuffer/2, topBuffer+Math.round(sessionY)+0.5);
+		ctx.lineTo(cW-rightBuffer, topBuffer+Math.round(sessionY)+0.5);
+		ctx.strokeStyle = "#777";
+		ctx.stroke();
+		session = session + timeGap[i][2];
+	}
+
+	ctx.font = "9px Roboto Mono";
+	ctx.textAlign = "start";
+	ctx.textBaseline = "middle";
+	var textBuffer = 5;
+	yPos = topBuffer;
+	prevSegment = 0;
+	var pos, pos2;
+	for (i in eventLog) {
+		yPos = yPos + prevSegment; 
+		var startTime = timeGap[i][0];
+		var endTime = timeGap[i][1];
+		prevSegment = (endTime-startTime) / 60000 * mH;
+		for (j in eventLog[i]) {
+			var delta = (eventLog[i][j].time-startTime) / 60000 * mH;
+			var eventItem = eventLog[i][j].event.split('-');
+			var mode = eventItem[0];
+			if (eventItem.length>1) {
+				var eventConc = '';
+				for (var k=1; k<eventItem.length; k++) {
+					eventConc = eventConc + eventItem[k];
+					if (k<eventItem.length-1) {
+						eventConc = eventConc + '_';
+					}
+				}
+				switch (mode) {
+					case 'pageSetup':
+						pos = {'x':colPosX[0], 'y':yPos+delta};
+						pos2 = {'x':colPosX[0]+rectWidth, 'y':yPos+delta};
+						
+						break;
+					case 'pageLayout':
+						pos = {'x':colPosX[1], 'y':yPos+delta};
+						pos2 = {'x':colPosX[1]+rectWidth, 'y':yPos+delta};
+						break;
+					case 'pageOrder':
+						pos = {'x':colPosX[2], 'y':yPos+delta};
+						pos2 = {'x':colPosX[2]+rectWidth, 'y':yPos+delta};
+						break;
+					case 'pageAlt':
+						pos = {'x':colPosX[3], 'y':yPos+delta};
+						pos2 = {'x':colPosX[3]+rectWidth, 'y':yPos+delta};
+						break;
+				}
+				var col = returnEventColor(eventItem[0], eventItem[1]);
+				if ($('input[name=events_check]:checked').length == 1) {
+					drawLine(pos, pos2, col, 1);
+				}
+				if ($('input[name=events_text_check]:checked').length == 1) {
+					ctx.fillText(eventConc, pos.x+rectWidth+textBuffer, yPos+delta);
+				}
+			}
+		}
+	}
+
+	function drawLine(a, b, col, w) {
+		ctx.beginPath();
+		ctx.strokeStyle = col;
+		ctx.lineWidth = w;
+		ctx.moveTo(Math.round(a.x), Math.floor(a.y)+0.5);
+		ctx.lineTo(Math.round(b.x), Math.floor(b.y)+0.5);
+		ctx.stroke();
+	}
+
+}
+
+var eventCol = '#444';
+	var eventColView = '#05F';
+	var eventColExport = '#F00';
+	var eventColSave = '#0F0';
+	var eventColHelp = '#FFF';
+	function returnEventColor(e0, e1) {
+		switch (e1) {
+			case 'fullscreen':
+				return eventColView;
+				break;
+			case 'margin':
+				return eventColView;
+				break;
+			case 'cell':
+				return eventColView;
+				break;
+			case 'blocks':
+				return eventColView;
+				break;
+			case 'export':
+				return eventColExport;
+				break;
+			case 'addSavedPage':
+				return eventColSave;
+				break;
+			case 'help':
+				return eventColHelp;
+				break;
+			default:
+				return eventCol;
+				break;
+		}
+		// switch (e0) {
+		// 	case 'pageSetup':
+		// 		break;
+		// 	case 'pageLayout':
+		// 		break;
+		// 	case 'pageOrder':
+		// 		break;
+		// 	case 'pageAlt':
+		// 		break;
+		// }
+	}
+
+
+</script>
+
+<style>
+
+body, html {
+	font-family: "Roboto Mono", monospace;
+	font-size: 12px;
+}
+
+div#control_panel {
+	position: relative;
+	float: left;
+	width: 18em;
+	margin: 0 2em;
+}
+
+div.controls {
+	position: relative;
+	float: left;
+	width: 100%;
+	margin: 1em 0;
+}
+
+div.controls textarea {
+	width: 100%;
+	height: 15em;
+	resize: vertical;
+}
+
+div.controls label {
+	display: inline-block;
+	margin-bottom: 0.5em;
+}
+
+div.controls input {
+	font-family: inherit;
+	font-size: 1.5em;
+	font-weight: 700;
+	border: none;
+	border-bottom: 2px solid #222;
+	width: 100%;
+}
+
+div.controls input[type=checkbox] {
+	width: 0.8em;
+	transform: scale(1.0);
+}
+
+div.controls .button {
+	font-family: inherit;
+	font-size: 0.8em;
+	font-weight: 300;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	background: #555;
+	color: white;
+	padding: 0.5em;
+	text-align: center;
+	cursor: pointer;
+}
+
+div.controls .button:hover {
+	background: #111;
+}
+
+div.controls .button:active {
+	background: #222;
+}
+
+div#vis_div {
+	position: relative;
+	float: left;
+	margin: 5em 10em;
+}
+
+</style>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
