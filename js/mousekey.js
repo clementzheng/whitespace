@@ -3207,6 +3207,7 @@ function loadPageSetup(f) {
 	$('input[name=column_count]').val(f.pageSetup.colCount);
 	$('input[name=row_count]').val(f.pageSetup.rowCount);
 	$('input[name=gutter]').val(f.pageSetup.gutter);
+	$('input[name=pbg_color]').val(f.pageSetup.bgColor);
 	renderPageSetup();
 }
 
