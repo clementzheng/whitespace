@@ -5,7 +5,7 @@ var pageSavedArr = [];
 var unitScale = {'in': 1, 'px': 96, 'mm': 25.4};
 
 var mode = 'landing';
-var placeMode = 'none';
+var placeMode = 'content';
 var placeClicked = false;
 var cellHover = {'bool':false, 'r':0, 'c':0};
 var cellSelected = {'r': 0, 'c': 0, 'r2': 0, 'c2': 0};
@@ -95,8 +95,8 @@ $(document).keyup(function(e) {
 		        			clearLayoutSelection();
 		        			if ($('#view_fullscreen').hasClass('active')) {
 					        	$('#view_fullscreen').toggleClass('active');
-					        	placeMode = 'none';
 					        	logEvent(mode);
+					        	placeMode = 'content';
 					        }
 		        			break;
 		        		case 'pageOrder':
@@ -1044,7 +1044,7 @@ function init() {
 				updateAllPages(pageLayout);
 				$('.cell').css('cursor', 'default');
 				$('.element').css('cursor', 'default');
-				placeMode = 'none';
+				placeMode = 'content';
 				$('#layout_toolbar div.active').toggleClass('active');
 				mode = 'pageSetup';
 				$('#warning_div.active').toggleClass('active');
@@ -1067,7 +1067,7 @@ function init() {
 				updateAllPages(pageOrder);
 				$('.cell').css('cursor', 'default');
 				$('.element').css('cursor', 'default');
-				placeMode = 'none';
+				placeMode = 'content';
 				$('#layout_toolbar div.active').toggleClass('active');
 				mode = 'pageLayout';
 				$('#warning_div.active').toggleClass('active');
@@ -1091,7 +1091,7 @@ function init() {
 				updateAllPages(pageAlt);
 				$('.cell').css('cursor', 'default');
 				$('.element').css('cursor', 'default');
-				placeMode = 'none';
+				placeMode = 'content';
 				$('#layout_toolbar div.active').toggleClass('active');
 				mode = 'pageOrder';
 				$('#warning_div.active').toggleClass('active');
@@ -1569,7 +1569,8 @@ function renderFullscreenPage(divID, pageObject) {
 	});
 	$('#exit_fullscreen').on('click', function() {
 		$('#view_fullscreen').toggleClass('active');
-		placeMode = 'none';
+		placeMode = 'content';
+		clearLayoutSelection();
 		logEvent(mode);
 	});
 	$('#view_fullscreen').css('min-height', $(document).outerHeight()+'px');
@@ -1788,16 +1789,16 @@ function initPageLayout() {
 		$('#place_text').toggleClass('active');
 		$('.cell').css('cursor', 'default');
 		$('.element').css('cursor', 'default');
-		clearLayoutSelection();
 		if ($('#place_text').hasClass('active')) {
 			placeMode = 'text';
 			$('.cell').css('cursor', 'pointer');
 			$('#layout_instructions').html('<p>Select cell to place text.</p>');
 			$('.cell').css('pointer-events', 'auto');
 		} else {
-			placeMode = 'none';
+			placeMode = 'content';
 			$('#layout_instructions').empty();
 		}
+		clearLayoutSelection();
 	});
 
 	$('#place_image').on('click', function() {
@@ -1805,16 +1806,16 @@ function initPageLayout() {
 		$('#place_image').toggleClass('active');
 		$('.cell').css('cursor', 'default');
 		$('.element').css('cursor', 'default');
-		clearLayoutSelection();
 		if ($('#place_image').hasClass('active')) {
 			placeMode = 'image';
 			$('.cell').css('cursor', 'pointer');
 			$('#layout_instructions').html('<p>Select cell to place image.</p>');
 			$('.cell').css('pointer-events', 'auto');
 		} else {
-			placeMode = 'none';
+			placeMode = 'content';
 			$('#layout_instructions').empty();
 		}
+		clearLayoutSelection();
 	});
 
 	$('#place_edit').on('click', function() {
@@ -1822,16 +1823,16 @@ function initPageLayout() {
 		$('#place_edit').toggleClass('active');
 		$('.cell').css('cursor', 'default');
 		$('.element').css('cursor', 'default');
-		clearLayoutSelection();
 		if ($('#place_edit').hasClass('active')) {
 			placeMode = 'edit';
 			$('.element').css('cursor', 'pointer');
 			$('#layout_instructions').html('<p>Select object to edit placement.</p>');
 			$('.cell').css('pointer-events', 'none');
 		} else {
-			placeMode = 'none';
+			placeMode = 'content';
 			$('#layout_instructions').empty();
 		}
+		clearLayoutSelection();
 	});
 
 	$('#edit_content').on('click', function() {
@@ -1839,16 +1840,16 @@ function initPageLayout() {
 		$('#edit_content').toggleClass('active');
 		$('.cell').css('cursor', 'default');
 		$('.element').css('cursor', 'default');
-		clearLayoutSelection();
 		if ($('#edit_content').hasClass('active')) {
 			placeMode = 'content';
 			$('.element').css('cursor', 'pointer');
 			$('#layout_instructions').html('<p>Select object to edit content, size and position.</p>');
 			$('.cell').css('pointer-events', 'none');
 		} else {
-			placeMode = 'none';
+			placeMode = 'content';
 			$('#layout_instructions').empty();
 		}
+		clearLayoutSelection();
 	});
 
 	$('#edit_view').on('click', function() {
@@ -2427,20 +2428,22 @@ function altHighlightUI(pageDiv, pageObj, UImode) {
 				);
 				pageDiv.find('.page_box .delete').off();
 				pageDiv.find('.page_box .delete').on('click', function() {
-					for (i in pageSavedArr) {
-						if (pageSavedArr[i].id==pageObj.id) {
-							pageSavedArr.splice(i, 1);
-							break;
+					if (pageObj.id != pageAlt.id) {
+						for (i in pageSavedArr) {
+							if (pageSavedArr[i].id==pageObj.id) {
+								pageSavedArr.splice(i, 1);
+								break;
+							}
 						}
-					}
-					for (i in pageAltArr) {
-						if (pageAltArr[i].id==pageObj.id) {
-							$('#'+pageAltArr[i].id+'_page .page_box .save.saved').toggleClass('saved');
-							break;
+						for (i in pageAltArr) {
+							if (pageAltArr[i].id==pageObj.id) {
+								$('#'+pageAltArr[i].id+'_page .page_box .save.saved').toggleClass('saved');
+								break;
+							}
 						}
+						renderSavedPages(pageSavedArr);
+						logEvent(mode+'-'+'removedSavedPage-'+pageSavedArr.length);
 					}
-					renderSavedPages(pageSavedArr);
-					logEvent(mode+'-'+'removedSavedPage-'+pageSavedArr.length);
 				});
 
 				pageDiv.children('.page_box').append(
@@ -2934,6 +2937,7 @@ function clearLayoutSelection() {
 		case 'content':
 			$('#layout_instructions').html('<p>Select object to edit content.</p>');
 			$('.element').css('cursor', 'pointer');
+			$('.cell').css('pointer-events', 'none');
 			break;
 	}
 }
