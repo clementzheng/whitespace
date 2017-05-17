@@ -644,14 +644,14 @@ function returnOrderPossibility(posA, posB) {
 	if (posA.x < posB.x) {
 		arrX.push(-1, false);
 	} else if (posA.x == posB.x) {
-		arrX.push(1, -1, 0, false);
+		arrX.push(1, -1, false);
 	} else {
 		arrX.push(1, false);
 	}
 	if (posA.y < posB.y) {
 		arrY.push(-1, false);
 	} else if (posA.y == posB.y) {
-		arrY.push(1, -1, 0, false);
+		arrY.push(1, -1, false);
 	} else {
 		arrY.push(1, false);
 	}
@@ -1481,7 +1481,7 @@ function returnElementOrderX(elem1, elem2) {
 	if (elem1.pos.x > elem2.pos.x) {
 		return 1;
 	} else if (elem1.pos.x == elem2.pos.x) {
-		return 0;
+		return false;
 	} else {
 		return -1;
 	}
@@ -1491,7 +1491,7 @@ function returnElementOrderY(elem1, elem2) {
 	if (elem1.pos.y > elem2.pos.y) {
 		return 1;
 	} else if (elem1.pos.y == elem2.pos.y) {
-		return 0;
+		return false;
 	} else {
 		return -1;
 	}
