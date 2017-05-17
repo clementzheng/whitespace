@@ -422,7 +422,7 @@
 			<div class="two column one_column_left transition">
 				<div id="order_list_div">
 					<div id="order_list_title" class="subheading">
-						Relations List
+						Relationship List
 					</div>
 					<div id="order_list_button_div">
 						<div id="set_all_order">Auto set</div>
@@ -534,10 +534,19 @@
 					<div id="alt_list_div">
 						<div id="alt_control">
 							<div id="refresh_alternatives">Refresh</div>
-							<div id="whitespace_div">
-								<img src="images/whitespace_2.svg">
-								<input type="range" name="whitespace_val" min="0.05" max="0.95" value="0.5" step="0.05">
-								<img src="images/whitespace_1.svg">
+							<div id="alternative_slider_div">
+								<div id="whitespace_div" class="alt_slider">
+									<span class="alt_slider_label">Avoid overlaps</span>
+									<span class="alt_slider_end">&minus;</span>
+									<input type="range" name="whitespace_val" min="0.05" max="0.95" value="0.5" step="0.05">
+									<span class="alt_slider_end">&plus;</span>
+								</div>
+								<div id="relationship_div" class="alt_slider">
+									<span class="alt_slider_label">Follow relationships</span>
+									<span class="alt_slider_end">&minus;</span>
+									<input type="range" name="relationship_val" min="0.0" max="1.0" value="1.0" step="0.05">
+									<span class="alt_slider_end">&plus;</span>
+								</div>
 							</div>
 						</div>
 						<div id="alt_message">
