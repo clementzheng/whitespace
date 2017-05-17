@@ -1826,25 +1826,48 @@ li.param .color_picker {
 	align-items: center;
 }
 
-#alt_div #alt_list_div #alt_control #whitespace_div {
+#alt_div #alt_list_div #alt_control #alternative_slider_div .alt_slider {
 	position: relative;
 	float: left;
+	clear: both;
+	margin: 0.6em 0;
 	margin-left: 1.0em;
 	display: flex;
 	align-items: center;
 }
 
-#alt_div #alt_list_div #alt_control #whitespace_div input {
+#alt_div #alt_list_div #alt_control #alternative_slider_div .alt_slider  input {
 	position: relative;
 	float: left;
 	width: 10em;
 }
 
-#alt_div #alt_list_div #alt_control #whitespace_div img {
+#alt_div #alt_list_div #alt_control #alternative_slider_div .alt_slider img {
 	position: relative;
 	float: left;
 	width: 1.6em;
 	margin: 0 0.4em;
+}
+
+#alt_div #alt_list_div #alt_control #alternative_slider_div .alt_slider .alt_slider_label {
+	position: relative;
+	float: left;
+	padding: 0;
+	width: 12em;
+	font-size: 0.70em;
+	letter-spacing: 0.05em;
+	color: #000;
+}
+
+#alt_div #alt_list_div #alt_control #alternative_slider_div .alt_slider .alt_slider_end {
+	position: relative;
+	float: left;
+	padding: 0;
+	font-size: 1.0em;
+	letter-spacing: 0.05em;
+	color: #444;
+	font-weight: 500;
+	padding: 0 0.3em;
 }
 
 #alt_div #alt_list_div #alt_control #refresh_alternatives {
@@ -1854,8 +1877,8 @@ li.param .color_picker {
 	border-radius: 2px;
 	font-size: 0.7em;
 	letter-spacing: 0.1em;
-	padding: 0.5em 1em;
-	margin-right: 2em;
+	padding: 1.70em 2em;
+	margin-right: 3em;
 	cursor: pointer;
 	text-transform: capitalize;
 }

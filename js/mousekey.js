@@ -2557,6 +2557,9 @@ function updateAltMessage(clear, ite, fil, ret) {
 //GENERATE PAGE ALTERNATIVES
 function generateAlternatives(pageObj, altCount) {
 	var cutOff = 1-$('input[name=whitespace_val]').val();
+	var folRel = $('input[name=relationship_val]').val();
+	var folOrderCount = folRel*2*pageObj.order.length;
+
 	var spawnZone = [];
 	for (i in pageObj.element) {
 		var wE = pageObj.element[i].size.w < pageObj.colCount ? pageObj.element[i].size.w : pageObj.colCount;
@@ -2625,7 +2628,7 @@ function generateAlternatives(pageObj, altCount) {
 	
 	var filterArr = [];
 	for (var i=0; i<randomArr.length; i++) {
-		var checkOrder = true;
+		var checkOrder = 0;
 		for (var j=0; j<randomArr[i].length; j++) {
 			for (var k=(j+1); k<randomArr[i].length; k++) {
 				for (o in pageObj.order) {
@@ -2641,50 +2644,57 @@ function generateAlternatives(pageObj, altCount) {
 					if (elemA && elemB) {
 						switch(pageObj.order[o].state.x) {
 							case '0':
-								if (elemA.x!=elemB.x) {
-									checkOrder = false;
+								if (elemA.x==elemB.x) {
+									checkOrder++;
 								}
 								break;
 							case '1':
-								if (elemA.x<elemB.x) {
-									checkOrder = false;
+								if (elemA.x>elemB.x) {
+									checkOrder++;
 								}
 								break;
 							case '-1':
-								if (elemA.x>elemB.x) {
-									checkOrder = false;
+								if (elemA.x<elemB.x) {
+									checkOrder++;
 								}
+								break;
+							case 'false':
+								checkOrder++;
 								break;
 						}
 						switch(pageObj.order[o].state.y) {
 							case '0':
-								if (elemA.y!=elemB.y) {
-									checkOrder = false;
+								if (elemA.y==elemB.y) {
+									checkOrder++;
 								}
 								break;
 							case '1':
-								if (elemA.y<elemB.y) {
-									checkOrder = false;
+								if (elemA.y>elemB.y) {
+									checkOrder++;
 								}
 								break;
 							case '-1':
-								if (elemA.y>elemB.y) {
-									checkOrder = false;
+								if (elemA.y<elemB.y) {
+									checkOrder++;
 								}
+								break;
+							case 'false':
+								checkOrder++;
 								break;
 						}
 						break;
 					}
 				}
-				if (!checkOrder) {
-					break;
-				}
+				// if (!checkOrder) {
+				// 	break;
+				// }
 			}
-			if (!checkOrder) {
-				break;
-			}		
+			// if (!checkOrder) {
+			// 	break;
+			// }		
 		}
-		if (checkOrder) {
+
+		if (checkOrder >= folOrderCount) {
 			var array = [];
 			for (j in randomArr[i]) {
 				array.push($.extend(true, {}, randomArr[i][j]));
